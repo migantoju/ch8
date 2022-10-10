@@ -1,0 +1,4 @@
+*.c8
+*.ch8
+.idea/
+cmake-build-debug/
