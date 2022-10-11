@@ -1,5 +1,6 @@
 //
 // Created by Miguel Toledano on 09/10/22.
+// Docs for SDL2: https://wiki.libsdl.org/APIByCategory
 //
 #include <SDL.h>
 
@@ -10,9 +11,13 @@
 
 class Graphics {
 public:
-    SDL_Window* window;
-    SDL_Renderer* render;
-    SDL_Surface* surface;
+    Graphics(const char *title);
+    ~Graphics();
 
+    void Update();
+
+    SDL_Window* window = nullptr;
+    SDL_Renderer* renderer = nullptr;
+    SDL_Texture* texture = nullptr;
 
 };
