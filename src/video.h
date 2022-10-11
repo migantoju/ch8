@@ -14,7 +14,7 @@ public:
     Graphics(const char *title);
     ~Graphics();
 
-    void Update();
+    void Update(void const* display, int pitch);
 
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
