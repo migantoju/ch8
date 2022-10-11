@@ -7,7 +7,7 @@
 
 Graphics::Graphics(const char *title) {
     // Return 0 on success or a negative error code on failure
-    if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         printf("ERROR!, Unable to init SDL. SDL_Error: %s\n", SDL_GetError());
     }
 
@@ -65,6 +65,29 @@ Graphics::~Graphics() {
 
     // Clean up
     SDL_Quit();
+}
+
+void Graphics::Update(void const* display, int pitch) {
+    // Update the given texture
+    auto updateTexture = SDL_UpdateTexture(
+            texture,        // Texture to update
+            nullptr,    // SDL_Rect structure or NULL to update entire texture
+            display,    // Raw pixel data
+            pitch             // Number of bytes in a row of pixel data
+            );
+
+    if(updateTexture < 0) {
+        printf("ERROR!, Unable to update texture. SDL_Error: %s\n", SDL_GetError());
+    }
+
+    // Clears the entire rendering target
+    SDL_RenderClear(renderer);
+
+    // Copy a portion of the texture to the current rendering target
+    SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+
+    // Update the screen with any rendering performed since the previous call.
+    SDL_RenderPresent(renderer);
 }
 
 
