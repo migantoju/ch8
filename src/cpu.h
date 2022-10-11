@@ -21,22 +21,23 @@ private:
     std::array<uint8_t, REGISTERS_SIZE> V{}; // Registers Vx - VF
     std::array<uint16_t, STACK_SIZE> S{}; // Stack
     std::array<uint8_t, KEYPAD_SIZE> Keyboard{}; // Keypad Hex
-    std::array<uint16_t, VIDEO_WIDTH * VIDEO_HEIGHT> Display{}; // Display
-    std::array<uint16_t, STACK_SIZE> I{}; // Index
 
     uint16_t opcode{}; // Current Opcode
     uint8_t DT{}; // Delay TImer
     uint8_t ST{}; // Sound Timer
-    uint8_t SP{}; // Stack Pointer
+    uint16_t SP{}; // Stack Pointer
     uint16_t PC{}; // Program Counter
+    uint16_t I{};   // Index
 public:
     CPU();
     // ~CPU();
 
-    void Reset();
+    std::array<uint16_t, VIDEO_WIDTH * VIDEO_HEIGHT> Display{}; // Display
     bool loadRom(std::string const& filename);
     void Cycle();
     void FetchOpcode();
+
+    int getVideoPitch();
 
     bool shouldDraw = false;
     bool playSound = false;
