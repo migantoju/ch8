@@ -77,25 +77,28 @@ void CPU::Cycle() {
 
     switch (opcode & GET_HIGH_NIBBLE) {
         case 0x0000:
-            switch (opcode & GET_8BITS) {
+            switch (opcode & 0x00FF) {
                 case 0x00E0:
                     // CLS
                     std::cout << "CLS opcode " << std::hex << opcode << std::endl;
                     // Clears display
-                    std::memset(Display, 0, VIDEO_WIDTH * VIDEO_HEIGHT);
+                    std::memset(Display, 0, sizeof(Display));
                     shouldDraw = true;
                     break;
                 case 0x00EE:
                     // RET
-                    std::cout << "RET opcode " << std::hex << opcode << std::endl;
+                    // std::cout << "RET opcode " << std::hex << opcode << std::endl;
+                    printf("RET opcode: %.4X\n", opcode);
                     // Return from a subroutine
-                    PC = S[PC];
                     SP--;
+                    PC = S[SP];
                     break;
                 default:
-                    std::cout << "Invalid opcode for 0x0000. Opcode: " << opcode << std::endl;
+                    // std::cout << "Invalid opcode for 0x0000. Opcode: " << opcode << std::endl;
+                    printf("\nUnknown opcode: %.4X\n", opcode);
                     break;
             }
+            break;
         case 0x1000:
             // JP addr
             std::cout << "JP opcode " << std::hex << opcode << std::endl;
@@ -106,8 +109,8 @@ void CPU::Cycle() {
             // CALL addr
             std::cout << "CALL opcode " << std::hex << opcode << std::endl;
             // Call subroutine at nnn
-            SP++;
             S[SP] = PC;
+            ++SP;
             PC = opcode & GET_ADDRESS;
             break;
         case 0x3000:
@@ -147,7 +150,7 @@ void CPU::Cycle() {
             V[(opcode & GET_X) >> 8] += opcode & GET_8BITS;
             break;
         case 0x8000:
-            switch (opcode & GET_4BITS) {
+            switch (opcode & 0x000F) {
                 case 0x0000:
                     // LD Vx, Vy
                     // Set Vx = Vy
@@ -196,19 +199,20 @@ void CPU::Cycle() {
                     // SHR Vx {, Vy}
                     // Set Vx = Vx SHR 1
                     std::cout << "0x8006 - SHR Vx {, Vy}: " << std::hex << opcode << std::endl;
-                    V[0xF] = 0;
-
-                    if ((V[(opcode & GET_X) >> 8] & 0x01) == 0x01) {
-                        V[0xF] = 1;
-                    }
-                    V[(opcode & GET_X) >> 8] /= 2;
+                    V[0xF] = V[(opcode&GET_X) >> 8] & 0x1;
+                    V[(opcode&GET_X) >> 8] >>= 1;
                     break;
                 case 0x0007:
                     // SUBN Vx, Vy
                     // Set Vx = Vy - Vx, set VF - NOT borrow
                     std::cout << "0x8007 SUB Vx, Vy: " << std::hex << opcode << std::endl;
-                    V[0xF] = V[(opcode & GET_X) >> 8] > V[(opcode & GET_Y) >> 4] ? 1 : 0;
-                    V[(opcode & GET_X) >> 8] = V[(opcode & GET_Y) >> 4] - V[(opcode & GET_X) >> 8];
+                    if(V[(opcode&GET_X) >> 8] > V[(opcode&GET_Y) >> 4]) {
+                        V[0xF] = 0;
+                    } else {
+                        V[0xF] = 1;
+                    }
+
+                    V[(opcode&GET_X) >> 8] = V[(opcode&GET_Y) >> 4] - V[(opcode&GET_X) >> 8];
                     break;
                 case 0x000E:
                     // SHL Vx {, Vy}
@@ -223,6 +227,7 @@ void CPU::Cycle() {
                 default:
                     std::cout << "Invalid opcode 0x8000: " << std::hex << opcode << std::endl;
             }
+            break;
         case 0x9000:
             // SNE Vx, Vy
             // Skip next instruction if Vx != Vy
@@ -257,7 +262,7 @@ void CPU::Cycle() {
             std::cout << "0xD000 DRW Vx, Vy, nibble: " << std::hex << opcode << std::endl;
             x = V[(opcode & GET_X) >> 8];
             y = V[(opcode & GET_Y) >> 4];
-            h = V[(opcode & GET_4BITS)];
+            h = opcode&GET_4BITS;
 
             V[0xF] = 0;
 
@@ -266,11 +271,11 @@ void CPU::Cycle() {
 
                 for (int col = 0; col < 8; col++) {
                     // If the but (sprite) is not 0, render/erase the pixel
-                    if ((pixels & (0x80) >> row) != 0) {
-                        if (Display[(x + row + (y + col) * 64)] == 1) {
+                    if ((pixels & (0x80 >> col)) != 0) {
+                        if (Display[(x + col + (y + row) * 64)] == 1) {
                             V[0xF] = 1;
                         }
-                        Display[x + row + ((y + col) * 64)] ^= 1;
+                        Display[x + col + ((y + row) * 64)] ^= 1;
                     }
                 }
             }
@@ -300,8 +305,8 @@ void CPU::Cycle() {
                     break;
                 default:
                     std::cout << "Invalid opcode for 0xE000: " << std::hex << opcode << std::endl;
-                    break;
             }
+            break;
         case 0xF000:
             switch (opcode & GET_8BITS) {
                 case 0x0007:
@@ -358,7 +363,7 @@ void CPU::Cycle() {
                     // tens I+1
                     Memory[I + 1] = (V[(opcode & GET_X) >> 8] / 10) % 10;
                     // ones digit I+2
-                    Memory[I + 2] = V[(opcode & GET_X) >> 8] / 10;
+                    Memory[I + 2] = V[(opcode & GET_X) >> 8] % 10;
 
                     break;
                 case 0x0055:
@@ -382,11 +387,10 @@ void CPU::Cycle() {
                     break;
                 default:
                     std::cout << "Unknown opcode for 0xF - " << std::hex << opcode << std::endl;
-                    break;
             }
-        default:
-            std::cerr << "Unknown opcode: " << std::hex << opcode << std::endl;
             break;
+        default:
+            std::cerr << "Unknown final opcode: " << std::hex << opcode << std::endl;
     }
 
     // Timers
