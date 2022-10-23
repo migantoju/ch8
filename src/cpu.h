@@ -18,9 +18,9 @@ const int MAX_FILE_SIZE = MEMORY_SIZE - START_ADDRESS;
 
 class CPU {
 private:
-    uint8_t Memory[MEMORY_SIZE]{};
-    uint8_t V[REGISTERS_SIZE]{};
-    uint16_t S[STACK_SIZE]{};
+    uint8_t Memory[MEMORY_SIZE]{}; // Memory RAM 4Kb
+    uint8_t V[REGISTERS_SIZE]{}; // Registers V0 - VF
+    uint16_t S[STACK_SIZE]{}; // Stack
 
     uint16_t opcode{}; // Current Opcode
     uint8_t DT{}; // Delay TImer
@@ -28,8 +28,6 @@ private:
     uint16_t SP{}; // Stack Pointer
     uint16_t PC{}; // Program Counter
     uint16_t I{};   // Index
-    uint16_t Display[VIDEO_WIDTH * VIDEO_HEIGHT]{};
-    uint8_t Keyboard[16]{};
 
     void FetchOpcode();
     static int randomByte();
@@ -38,10 +36,11 @@ public:
     CPU();
     // ~CPU();
 
+    uint8_t Keyboard[16]{};
+    uint16_t Display[VIDEO_WIDTH * VIDEO_HEIGHT]{};
+
     bool loadRom(std::string const& filename);
     void Cycle();
-
-    int getVideoPitch();
 
     bool shouldDraw = false;
     bool playSound = false;
