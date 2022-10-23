@@ -398,6 +398,7 @@ void CPU::Cycle() {
     if (ST > 0) {
         if (ST == 1) {
             std::cout << "BEEEEP!" << std::endl;
+            playSound = true;
         }
         --ST;
     }
