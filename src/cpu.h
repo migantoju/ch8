@@ -1,8 +1,6 @@
 //
 // Created by Miguel Toledano on 09/10/22.
 //
-#include <array>
-
 #ifndef CHIP8_CPU_H
 #define CHIP8_CPU_H
 
@@ -14,13 +12,15 @@ const int STACK_SIZE = 16;
 const int KEYPAD_SIZE = 16;
 const short int VIDEO_WIDTH = 64;
 const short int VIDEO_HEIGHT = 32;
+const uint8_t FONTSET_SIZE = 80;
+const int START_ADDRESS = 0x200;
+const int MAX_FILE_SIZE = MEMORY_SIZE - START_ADDRESS;
 
 class CPU {
 private:
-    std::array<uint8_t, MEMORY_SIZE> Memory{}; // RAM 4KB
-    std::array<uint8_t, REGISTERS_SIZE> V{}; // Registers Vx - VF
-    std::array<uint16_t, STACK_SIZE> S{}; // Stack
-    std::array<uint8_t, KEYPAD_SIZE> Keyboard{}; // Keypad Hex
+    uint8_t Memory[MEMORY_SIZE]{};
+    uint8_t V[REGISTERS_SIZE]{};
+    uint16_t S[STACK_SIZE]{};
 
     uint16_t opcode{}; // Current Opcode
     uint8_t DT{}; // Delay TImer
@@ -28,14 +28,18 @@ private:
     uint16_t SP{}; // Stack Pointer
     uint16_t PC{}; // Program Counter
     uint16_t I{};   // Index
+    uint16_t Display[VIDEO_WIDTH * VIDEO_HEIGHT]{};
+    uint8_t Keyboard[16]{};
+
+    void FetchOpcode();
+    static int randomByte();
+
 public:
     CPU();
     // ~CPU();
 
-    std::array<uint16_t, VIDEO_WIDTH * VIDEO_HEIGHT> Display{}; // Display
     bool loadRom(std::string const& filename);
     void Cycle();
-    void FetchOpcode();
 
     int getVideoPitch();
 
