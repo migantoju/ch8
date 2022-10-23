@@ -77,7 +77,7 @@ void CPU::Cycle() {
 
     switch (opcode & GET_HIGH_NIBBLE) {
         case 0x0000:
-            switch (opcode & 0x00FF) {
+            switch (opcode & GET_8BITS) {
                 case 0x00E0:
                     // CLS
                     std::cout << "CLS opcode " << std::hex << opcode << std::endl;

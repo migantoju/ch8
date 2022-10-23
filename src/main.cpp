@@ -108,7 +108,7 @@ void Run() {
         }
 
         // Sleep
-        std::this_thread::sleep_for(std::chrono::microseconds(1200));
+        std::this_thread::sleep_for(std::chrono::microseconds(1000));
     }
 }
 
