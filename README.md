@@ -41,16 +41,16 @@ $ ./chip8 <ROM filename>
 and that's all, enjoy 😊.
 
 ## Next Steps (TODO)
--[ ] Add sound/beeper support
--[ ] Improve execution timing
--[ ] Add [Super CHIP-8](https://johnearnest.github.io/Octo/docs/SuperChip.html) Support 
--[ ] Add [XO-CHIP](https://johnearnest.github.io/Octo/docs/XO-ChipSpecification.html) support
--[ ] Use [function pointers](https://multigesture.net/wp-content/uploads/mirror/zenogais/FunctionPointers.htm) instead of a giant switch statement
--[ ] Improve graphics by adding filters ([Hqx](https://en.wikipedia.org/wiki/Hqx))
--[ ] Port it to other platforms (`Mobile`? some portable video console?) or languages
--[ ] Move on to a more complex project for example emulating a Gameboy (Z80 processor)
--[ ] Add Xbox and/or PlayStation controller support
--[ ] Create a Chip-8 game
+- [ ] Add sound/beeper support
+- [ ] Improve execution timing
+- [ ] Add [Super CHIP-8](https://johnearnest.github.io/Octo/docs/SuperChip.html) Support 
+- [ ] Add [XO-CHIP](https://johnearnest.github.io/Octo/docs/XO-ChipSpecification.html) support
+- [ ] Use [function pointers](https://multigesture.net/wp-content/uploads/mirror/zenogais/FunctionPointers.htm) instead of a giant switch statement
+- [ ] Improve graphics by adding filters ([Hqx](https://en.wikipedia.org/wiki/Hqx))
+- [ ] Port it to other platforms (`Mobile`? some portable video console?) or languages
+- [ ] Move on to a more complex project for example emulating a Gameboy (Z80 processor)
+- [ ] Add Xbox and/or PlayStation controller support
+- [ ] Create a Chip-8 game
 
 ## Technical Ref
 ### Memory Map diagram
