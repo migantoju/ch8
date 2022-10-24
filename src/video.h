@@ -7,17 +7,20 @@
 #ifndef CHIP8_VIDEO_H
 #define CHIP8_VIDEO_H
 
-#endif //CHIP8_VIDEO_H
+#define WIDTH 1024
+#define HEIGHT 512
 
 class Graphics {
 public:
     Graphics(const char *title);
     ~Graphics();
 
-    void Update(int pitch, const uint8_t display[64 *32]);
+    void update(uint32_t (&pixels)[2048]);
 
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
     SDL_Texture* texture = nullptr;
 
 };
+
+#endif //CHIP8_VIDEO_H
